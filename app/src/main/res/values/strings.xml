@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">MEDIA PLAYER</string>
+    <string name="video">Video Player</string>
+    <string name="about">About</string>
+    <string name="creator">Created By: Kumar Shivam Ray</string>
+    <string name="version">Version: 1.0.1</string>
+    <string name="company">Company: PanDit Pvt. Ltd.</string>
+    <string name="contact">Contact: 9348569931</string>
+    <string name="email">Email: 1605283@kiit.ac.in</string>
+    <string name="select">Select Audio File</string>
+    <string name="duration">--:--</string>
+    <string name="audio_player">Audio Player</string>
+    <string name="enable_pip">Enable PIP Mode</string>
+    <string name="video_thumbnail">Video thumbnail</string>
+    <string name="now_playing">Media Player | Now Playing…</string>
+</resources>
