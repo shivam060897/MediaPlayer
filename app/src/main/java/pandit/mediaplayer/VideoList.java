@@ -14,6 +14,7 @@ import android.widget.ListView;
 import java.util.ArrayList;
 
 public class VideoList extends AppCompatActivity {
+
     ListView listView1;
     CustomVideoAdaptor mCustomVideoAdaptor;
     ArrayList<VideoDetails> mVideoDetailsArrayList;

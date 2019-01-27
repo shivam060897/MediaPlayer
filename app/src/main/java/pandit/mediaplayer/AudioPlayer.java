@@ -4,7 +4,10 @@ import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.ContentResolver;
+import android.content.ContentUris;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
@@ -21,6 +24,7 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class AudioPlayer extends AppCompatActivity {
@@ -49,10 +53,7 @@ public class AudioPlayer extends AppCompatActivity {
         }
     };
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_audio_player);
+    void init() {
         listView1 = findViewById(R.id.lv1);
         ib1 = findViewById(R.id.ib1);
         ib2 = findViewById(R.id.ib2);
@@ -63,30 +64,22 @@ public class AudioPlayer extends AppCompatActivity {
         t2 = findViewById(R.id.t2);
         t3 = findViewById(R.id.t3);
         seekBar = findViewById(R.id.pb1);
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_audio_player);
+        init();
+
         mediaPlayer = new MediaPlayer();
         mAudioDetailsArrayList = new ArrayList<>();
         t1.setVisibility(View.INVISIBLE);
         t2.setVisibility(View.INVISIBLE);
         seekBar.setVisibility(View.INVISIBLE);
-        ContentResolver contentResolver = getContentResolver();
-        Uri videoUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
-        musicCursor = contentResolver.query(videoUri, null, null, null, null);
-        if (musicCursor != null && musicCursor.moveToFirst()) {
-            int songTitle = musicCursor.getColumnIndex(MediaStore.Audio.Media.TITLE);
-            int songDuration = musicCursor.getColumnIndex(MediaStore.Audio.Media.DURATION);
-            int songAlbum = musicCursor.getColumnIndex(MediaStore.Audio.Media.ALBUM);
-            do {
-                AudioDetails audioDetails = new AudioDetails();
-                audioDetails.setAudioName(musicCursor.getString(songTitle));
-                audioDetails.setAudioTime(musicCursor.getString(songDuration));
-                audioDetails.setAudioAlbum(musicCursor.getString(songAlbum));
-                mAudioDetailsArrayList.add(audioDetails);
-            } while (musicCursor.moveToNext());
-        }
-        mCustomAudioAdaptor = new CustomAudioAdaptor(AudioPlayer.this, mAudioDetailsArrayList);
-        listView1.setAdapter(mCustomAudioAdaptor);
-        maxPosition = mCustomAudioAdaptor.getCount();
-        maxPosition = maxPosition - 1;
+        generateAudioList();
+        maxPosition = mCustomAudioAdaptor.getCount() - 1;
+
         ib1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -108,6 +101,7 @@ public class AudioPlayer extends AppCompatActivity {
                 }
             }
         });
+
         ib2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -141,6 +135,7 @@ public class AudioPlayer extends AppCompatActivity {
                         "drawable", getPackageName()));
             }
         });
+
         ib3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -157,6 +152,7 @@ public class AudioPlayer extends AppCompatActivity {
                 }
             }
         });
+
         ib4.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -190,6 +186,7 @@ public class AudioPlayer extends AppCompatActivity {
                         "drawable", getPackageName()));
             }
         });
+
         ib5.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -204,6 +201,7 @@ public class AudioPlayer extends AppCompatActivity {
                 }
             }
         });
+
         listView1.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -216,6 +214,7 @@ public class AudioPlayer extends AppCompatActivity {
                 playAudio();
             }
         });
+
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -242,11 +241,11 @@ public class AudioPlayer extends AppCompatActivity {
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                int seek = seekBar.getProgress();
-                mediaPlayer.seekTo(seek);
+                mediaPlayer.seekTo(seekBar.getProgress());
                 mediaPlayer.start();
             }
         });
+
         mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
             public void onCompletion(MediaPlayer mp) {
@@ -265,6 +264,42 @@ public class AudioPlayer extends AppCompatActivity {
                     playNext();
             }
         });
+
+    }
+
+    private void generateAudioList() {
+        ContentResolver contentResolver = getContentResolver();
+        Uri videoUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+        musicCursor = contentResolver.query(videoUri, null, null, null, null);
+        if (musicCursor != null && musicCursor.moveToFirst()) {
+            int songTitle = musicCursor.getColumnIndex(MediaStore.Audio.Media.TITLE);
+            int songDuration = musicCursor.getColumnIndex(MediaStore.Audio.Media.DURATION);
+            int songAlbum = musicCursor.getColumnIndex(MediaStore.Audio.Media.ALBUM);
+            Long albumId = musicCursor.getLong(musicCursor.getColumnIndexOrThrow(MediaStore.Audio.Media.ALBUM_ID));
+            do {
+                AudioDetails audioDetails = new AudioDetails();
+                audioDetails.setAudioName(musicCursor.getString(songTitle));
+                audioDetails.setAudioTime(musicCursor.getString(songDuration));
+                audioDetails.setAudioAlbum(musicCursor.getString(songAlbum));
+                audioDetails.setAlbumBitmap(createAudioBitmap(albumId));
+                mAudioDetailsArrayList.add(audioDetails);
+            } while (musicCursor.moveToNext());
+        }
+        mCustomAudioAdaptor = new CustomAudioAdaptor(AudioPlayer.this, mAudioDetailsArrayList);
+        listView1.setAdapter(mCustomAudioAdaptor);
+    }
+
+    Bitmap createAudioBitmap(Long albumId) {
+        Bitmap bitmap;
+
+        try {
+            bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), ContentUris.withAppendedId(Uri.parse("content://media/external/audio/albumart"), albumId));
+        } catch (IOException e) {
+            e.printStackTrace();
+            bitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.audio_file);
+        }
+
+        return bitmap;
     }
 
     public void playAudio() {
@@ -273,10 +308,13 @@ public class AudioPlayer extends AppCompatActivity {
         mediaPlayer.reset();
         t3.setText(filename);
         createNotification(filename);
+
+        Notify notify = new Notify(AudioPlayer.this, filename, (NotificationManager) getSystemService(NOTIFICATION_SERVICE));
         try {
             mediaPlayer.setDataSource(path);
             mediaPlayer.prepare();
             mediaPlayer.start();
+            notify.create();
             play = 1;
             handler.removeCallbacks(moveSeekBarThread);
             handler.postDelayed(moveSeekBarThread, 100);
@@ -334,7 +372,6 @@ public class AudioPlayer extends AppCompatActivity {
             mChannel = new NotificationChannel("101", "Ram", NotificationManager.IMPORTANCE_HIGH);
             builder.setChannelId("101");
         }
-
 
         builder.setContentTitle("Now Playing...")
                 .setContentText(songName)

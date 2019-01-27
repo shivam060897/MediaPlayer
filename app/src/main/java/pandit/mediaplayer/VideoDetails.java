@@ -1,8 +1,30 @@
 package pandit.mediaplayer;
 
+import android.graphics.Bitmap;
+import android.net.Uri;
+import android.support.annotation.NonNull;
+
 public class VideoDetails {
     private String Name;
     private String Duration;
+    private Bitmap AlbumImage;
+    private Uri uri;
+
+    public Bitmap getAlbumImage() {
+        return AlbumImage;
+    }
+
+    public void setAlbumImage(Bitmap albumImage) {
+        AlbumImage = albumImage;
+    }
+
+    public Uri getUri() {
+        return uri;
+    }
+
+    public void setUri(Uri uri) {
+        this.uri = uri;
+    }
 
     public String getName() {
         return Name;
@@ -20,6 +42,7 @@ public class VideoDetails {
         Duration = duration;
     }
 
+    @NonNull
     @Override
     public String toString() {
         return "mImage=" + "\n" + "Name='" + Name + "\n" + "Duration='" + Duration;

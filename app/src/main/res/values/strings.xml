@@ -13,4 +13,6 @@
     <string name="enable_pip">Enable PIP Mode</string>
     <string name="video_thumbnail">Video thumbnail</string>
     <string name="now_playing">Media Player | Now Playing…</string>
+    <string name="v">Video</string>
+    <string name="m">Music</string>
 </resources>
