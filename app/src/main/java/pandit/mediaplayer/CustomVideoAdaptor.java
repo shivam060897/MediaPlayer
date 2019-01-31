@@ -1,6 +1,7 @@
 package pandit.mediaplayer;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,8 +27,9 @@ public class CustomVideoAdaptor extends ArrayAdapter {
         return Data.size();
     }
 
+    @NonNull
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(int position, View convertView, @NonNull ViewGroup parent) {
         ViewHolder viewHolder;
 
         if (convertView == null) {
@@ -55,7 +57,6 @@ public class CustomVideoAdaptor extends ArrayAdapter {
         ViewHolder(View v) {
             this.Name = v.findViewById(R.id.VideoName);
             this.Duration = v.findViewById(R.id.VideoDuration);
-
         }
     }
 }

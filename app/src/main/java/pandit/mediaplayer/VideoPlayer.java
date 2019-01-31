@@ -25,7 +25,7 @@ public class VideoPlayer extends AppCompatActivity {
         mVideoView = findViewById(R.id.VideoView);
 
         if (getIntent().getExtras() != null) {
-            PlayAudioFile(getIntent().getExtras().getString("Video"));
+            PlayVideoFile(getIntent().getExtras().getString("Video"));
         }
 
         MediaController mediaController = new MediaController(VideoPlayer.this, true);
@@ -40,7 +40,7 @@ public class VideoPlayer extends AppCompatActivity {
         mOrientation = new Orientation(VideoPlayer.this);
     }
 
-    void PlayAudioFile(String AudioFile) {
+    void PlayVideoFile(String AudioFile) {
         ContentResolver contentResolver = getContentResolver();
         Uri videoUri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
         Cursor videoCursor = contentResolver.query(videoUri, null, null, null, null);

@@ -11,33 +11,18 @@
         android:fullBackupContent="false"
         android:icon="@mipmap/launcher_icon"
         android:label="@string/app_name"
-        android:manageSpaceActivity=".Start"
         android:roundIcon="@mipmap/launcher_icon_round"
         android:screenOrientation="portrait"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".Activity_AudioPlayer" />
-        <activity android:name=".Start">
+        <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".MainActivity"
-            android:theme="@style/AppTheme" />
-        <activity
-            android:name=".About"
-            android:theme="@style/AppTheme" />
-        <activity
-            android:name=".AudioPlayer"
-            android:configChanges="orientation"
-            android:theme="@style/AppTheme" />
-        <activity
-            android:name=".VideoList"
-            android:theme="@style/AppTheme" />
         <activity
             android:name=".VideoPlayer"
             android:configChanges="screenSize|smallestScreenSize"
@@ -50,5 +35,4 @@
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
     </application>
-
 </manifest>

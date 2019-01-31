@@ -8,28 +8,26 @@ import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 
 class Notify {
-    private String SongName;
     private Context mContext;
     private NotificationManager notificationManager;
 
-    Notify(Context context, String songName, NotificationManager notificationManager) {
-        SongName = songName;
+    Notify(Context context, NotificationManager notificationManager) {
         mContext = context;
         this.notificationManager = notificationManager;
     }
 
-    void create() {
+    void create(String songName) {
         NotificationChannel mChannel = null;
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(mContext, "1001");
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            mChannel = new NotificationChannel("101", "Ram", NotificationManager.IMPORTANCE_HIGH);
+            mChannel = new NotificationChannel("101", "Ram", NotificationManager.IMPORTANCE_DEFAULT);
             builder.setChannelId("101");
         }
 
         builder.setContentTitle("Now Playing...")
-                .setContentText(SongName)
+                .setContentText(songName)
                 .setSmallIcon(R.drawable.notification_icon)
                 .setAutoCancel(true);
 

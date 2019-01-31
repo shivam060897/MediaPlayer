@@ -15,4 +15,5 @@
     <string name="now_playing">Media Player | Now Playing…</string>
     <string name="v">Video</string>
     <string name="m">Music</string>
+    <string name="_00_00">00:00</string>
 </resources>

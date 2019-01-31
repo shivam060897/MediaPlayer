@@ -1,21 +1,11 @@
 package pandit.mediaplayer;
 
-import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 
 public class AudioDetails {
     private String audioName;
     private String audioTime;
     private String audioAlbum;
-    private Bitmap AlbumBitmap;
-
-    Bitmap getAlbumBitmap() {
-        return AlbumBitmap;
-    }
-
-    void setAlbumBitmap(Bitmap albumBitmap) {
-        AlbumBitmap = albumBitmap;
-    }
 
     String getAudioName() {
         return audioName;
