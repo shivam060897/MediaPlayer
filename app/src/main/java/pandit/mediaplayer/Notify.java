@@ -29,10 +29,11 @@ class Notify {
         builder.setContentTitle("Now Playing...")
                 .setContentText(songName)
                 .setSmallIcon(R.drawable.notification_icon)
-                .setAutoCancel(true);
+                .setAutoCancel(true)
+                .setDefaults(Notification.DEFAULT_ALL);
 
         Notification notification = builder.build();
-        notification.defaults = Notification.DEFAULT_ALL | Notification.FLAG_ONGOING_EVENT;
+        notification.defaults = Notification.DEFAULT_VIBRATE | Notification.FLAG_ONGOING_EVENT;
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             notificationManager.createNotificationChannel(mChannel);
